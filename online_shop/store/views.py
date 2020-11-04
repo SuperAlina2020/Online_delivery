@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import OrderForm
+from .forms import OrderForm,UserProfile
 from .filters import OrderFilterSet
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
@@ -83,6 +83,17 @@ def customer_page(request, pk):
 
     except ObjectDoesNotExist:
         return HttpResponse('Takogo net')
+
+
+def account_settings(request):
+    user = request.user.customer
+    form = UserProfile(instance=user)
+    if request.method == 'POST':
+        form = UserProfile(request.POST,request.FILES,instance=user)
+        if form.is_valid():
+            form.save()
+    context = {'form':form}
+    return render(request,'store/account.html',context)
 
 def create_order(request,pk):
     OrderFormSet = inlineformset_factory(Customer,Order,fields=('product','status'))
