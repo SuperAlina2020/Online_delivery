@@ -29,10 +29,15 @@ class Customer(models.Model):
     phone = models.CharField(max_length=200,null=True)
     email = models.CharField(max_length=200, null=True)
     address = models.CharField(max_length=200,null=True)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True,blank=True)
+    github_link = models.CharField(null=True,blank=True,max_length=150)
+    insta_link = models.CharField(null=True, blank=True,max_length=150)
+    twitter_link = models.CharField(null=True, blank=True,max_length=150)
+    facebook_link = models.CharField(null=True, blank=True,max_length=150)
 
     def __str__(self):
         return self.full_name
+
 
 
 class Order(models.Model):
