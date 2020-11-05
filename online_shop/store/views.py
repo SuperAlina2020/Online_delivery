@@ -20,8 +20,11 @@ def register(request):
     if request.method == 'POST':
         form = CustomRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request,'You auth successfully')
+            user = form.save()
+            group = Group.objects.get(name='customer')
+            Customer.objects.create(user=user,full_name=user.username)
+            user.groups.add(group)
+            messages.success(request,'You authorize successfully')
             return redirect('home')
     context = {'form':form}
     return render(request,'store/register.html',context)
@@ -38,8 +41,11 @@ def login_page(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request,username=username,password=password)
-        login(request, user)
-        return redirect('home')
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request,'You have typed invalid data!')
     context = {}
     return render(request,'store/login.html',context)
 
